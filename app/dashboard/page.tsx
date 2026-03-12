@@ -1,22 +1,42 @@
 "use client"
 
 import { useState } from "react"
-
-let freeLimit = 3
+import { supabase } from "../../lib/supabase"
 
 export default function Dashboard(){
 
 const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
+const [freeLimit,setFreeLimit] = useState(3)
 
-const runAudit = async ()=>{
+const runAudit = async () => {
 
-if(freeLimit <= 0){
+const email = "demo@rankpilot.ai"
+
+const { data: user } = await supabase
+.from("users")
+.select("*")
+.eq("email", email)
+.single()
+
+let currentUser = user
+
+if(!user){
+const { data:newUser } = await supabase
+.from("users")
+.insert([{ email: email }])
+.select()
+.single()
+
+currentUser = newUser
+}
+
+if(currentUser.audits <= 0){
 alert("Free limit finished. Upgrade to Pro Plan.")
 return
 }
 
-freeLimit = freeLimit - 1
+setFreeLimit(currentUser.audits)
 
 const res = await fetch("https://rankpilot-ai.onrender.com/start-growth",{
 method:"POST",
@@ -26,6 +46,13 @@ body:JSON.stringify({domain})
 
 const data = await res.json()
 setResult(data)
+
+await supabase
+.from("users")
+.update({ audits: currentUser.audits - 1 })
+.eq("email", email)
+
+setFreeLimit(currentUser.audits - 1)
 
 }
 
@@ -52,7 +79,8 @@ style={{
 marginLeft:"10px",
 padding:"10px 20px",
 background:"#22c55e",
-border:"none"
+border:"none",
+cursor:"pointer"
 }}
 >
 Run SEO Audit
