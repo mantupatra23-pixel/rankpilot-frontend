@@ -11,7 +11,14 @@ const [freeLimit,setFreeLimit] = useState(3)
 
 const runAudit = async () => {
 
-const email = "demo@rankpilot.ai"
+const { data } = await supabase.auth.getUser()
+
+const email = data.user?.email
+
+if(!email){
+alert("Please login first")
+return
+}
 
 const { data: user } = await supabase
 .from("users")
@@ -22,6 +29,7 @@ const { data: user } = await supabase
 let currentUser = user
 
 if(!user){
+
 const { data:newUser } = await supabase
 .from("users")
 .insert([{ email: email }])
@@ -29,6 +37,7 @@ const { data:newUser } = await supabase
 .single()
 
 currentUser = newUser
+
 }
 
 if(currentUser.audits <= 0){
@@ -44,8 +53,9 @@ headers:{ "Content-Type":"application/json" },
 body:JSON.stringify({domain})
 })
 
-const data = await res.json()
-setResult(data)
+const dataResult = await res.json()
+
+setResult(dataResult)
 
 await supabase
 .from("users")
