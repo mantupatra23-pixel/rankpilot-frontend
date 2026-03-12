@@ -1,14 +1,42 @@
 "use client"
 
-import { useState } from "react"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { useState,useEffect } from "react"
+import { supabase } from "../lib/supabase"
 
 export default function Home(){
 
-const { data: session } = useSession()
-
+const [user,setUser] = useState<any>(null)
 const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
+
+useEffect(()=>{
+
+const getUser = async ()=>{
+
+const { data } = await supabase.auth.getUser()
+
+setUser(data.user)
+
+}
+
+getUser()
+
+},[])
+
+const login = async ()=>{
+
+await supabase.auth.signInWithOAuth({
+provider:"github"
+})
+
+}
+
+const logout = async ()=>{
+
+await supabase.auth.signOut()
+location.reload()
+
+}
 
 const runAudit = async ()=>{
 
@@ -19,14 +47,13 @@ body:JSON.stringify({domain})
 })
 
 const data = await res.json()
-
 setResult(data)
 
 }
 
 return(
 
-<div style={{display:"flex",minHeight:"100vh",fontFamily:"Arial"}}>
+<div style={{display:"flex",minHeight:"100vh"}}>
 
 {/* Sidebar */}
 
@@ -49,15 +76,15 @@ padding:"30px"
 
 <br/>
 
-{session ? (
+{user ? (
 
-<button onClick={()=>signOut()}>
+<button onClick={logout}>
 Logout
 </button>
 
-) : (
+):(
 
-<button onClick={()=>signIn()}>
+<button onClick={login}>
 Login with GitHub
 </button>
 
@@ -122,38 +149,6 @@ borderRadius:"10px"
 </div>
 
 )}
-
-<br/>
-
-{/* Tool cards */}
-
-<div style={{
-display:"grid",
-gridTemplateColumns:"1fr 1fr",
-gap:"20px"
-}}>
-
-<div style={{background:"#1e293b",padding:"20px"}}>
-<h3>SEO Audit</h3>
-<p>Find technical SEO problems instantly</p>
-</div>
-
-<div style={{background:"#1e293b",padding:"20px"}}>
-<h3>AI Blog Generator</h3>
-<p>Create SEO optimized blog posts</p>
-</div>
-
-<div style={{background:"#1e293b",padding:"20px"}}>
-<h3>Backlink Generator</h3>
-<p>Generate high authority backlinks</p>
-</div>
-
-<div style={{background:"#1e293b",padding:"20px"}}>
-<h3>Traffic Agent</h3>
-<p>AI agent to grow website traffic</p>
-</div>
-
-</div>
 
 </div>
 
