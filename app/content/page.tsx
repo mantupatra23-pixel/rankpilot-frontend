@@ -1,3 +1,3 @@
 export default function Content(){
-return <h1>AI Content Generator</h1>
+  return <h1>AI Blog Generator</h1>
 }

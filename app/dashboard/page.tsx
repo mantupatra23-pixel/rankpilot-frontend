@@ -1,30 +1,39 @@
-import Sidebar from "@/components/sidebar";
+import Sidebar from "../../components/Sidebar"
 
-export default function Dashboard() {
-  return (
-    <div className="flex">
-      <Sidebar />
+export default function Dashboard(){
+  return(
+    <div style={{display:"flex"}}>
 
-      <div className="p-10 w-full">
-        <h1 className="text-3xl font-bold">RankPilot Dashboard</h1>
+      <Sidebar/>
 
-        <div className="grid grid-cols-3 gap-6 mt-10">
-          <div className="p-6 bg-gray-100 rounded-xl">
-            <h2 className="text-xl">SEO Score</h2>
-            <p className="text-3xl font-bold">78</p>
+      <div style={{padding:"40px",width:"100%"}}>
+        <h1>RankPilot Dashboard</h1>
+
+        <div style={{
+          display:"grid",
+          gridTemplateColumns:"repeat(3,1fr)",
+          gap:"20px",
+          marginTop:"30px"
+        }}>
+
+          <div style={{background:"#f1f5f9",padding:"20px",borderRadius:"10px"}}>
+            <h3>SEO Score</h3>
+            <h1>78</h1>
           </div>
 
-          <div className="p-6 bg-gray-100 rounded-xl">
-            <h2 className="text-xl">Keywords</h2>
-            <p className="text-3xl font-bold">120</p>
+          <div style={{background:"#f1f5f9",padding:"20px",borderRadius:"10px"}}>
+            <h3>Keywords</h3>
+            <h1>120</h1>
           </div>
 
-          <div className="p-6 bg-gray-100 rounded-xl">
-            <h2 className="text-xl">Backlinks</h2>
-            <p className="text-3xl font-bold">56</p>
+          <div style={{background:"#f1f5f9",padding:"20px",borderRadius:"10px"}}>
+            <h3>Backlinks</h3>
+            <h1>56</h1>
           </div>
+
         </div>
       </div>
+
     </div>
-  );
+  )
 }
