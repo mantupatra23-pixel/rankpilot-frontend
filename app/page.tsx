@@ -1,24 +1,49 @@
-import Link from "next/link"
-
 export default function Home() {
   return (
-    <div style={{padding:40,fontFamily:"sans-serif"}}>
-      <h1>🚀 RankPilot AI</h1>
-      <p>AI Powered SEO Growth Platform</p>
+    <main style={{
+      background:"#0f172a",
+      minHeight:"100vh",
+      color:"white",
+      padding:"40px",
+      fontFamily:"Arial"
+    }}>
 
-      <br/>
+      <h1 style={{fontSize:"40px",marginBottom:"20px"}}>
+        RankPilot AI
+      </h1>
 
-      <Link href="/dashboard">
-        <button style={{
-          padding:"12px 25px",
-          background:"black",
-          color:"white",
-          borderRadius:"8px",
-          border:"none"
-        }}>
-          Open Dashboard
-        </button>
-      </Link>
-    </div>
+      <p style={{marginBottom:"40px"}}>
+        AI SEO Agent + AI Traffic Growth System
+      </p>
+
+      <div style={{
+        display:"grid",
+        gridTemplateColumns:"1fr 1fr",
+        gap:"20px"
+      }}>
+
+        <div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+          <h2>SEO Audit</h2>
+          <p>Scan your website SEO issues instantly</p>
+        </div>
+
+        <div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+          <h2>AI Content Generator</h2>
+          <p>Create SEO optimized blogs using AI</p>
+        </div>
+
+        <div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+          <h2>Backlink Generator</h2>
+          <p>Generate high authority backlinks automatically</p>
+        </div>
+
+        <div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+          <h2>Traffic Growth Agent</h2>
+          <p>AI agent that grows your website traffic</p>
+        </div>
+
+      </div>
+
+    </main>
   )
 }
