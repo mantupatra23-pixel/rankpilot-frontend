@@ -1,39 +1,81 @@
-import Sidebar from "../../components/sidebar"
+"use client"
+
+import { useState } from "react"
+
+let freeLimit = 3
 
 export default function Dashboard(){
-  return(
-    <div style={{display:"flex"}}>
 
-      <Sidebar/>
+const [domain,setDomain] = useState("")
+const [result,setResult] = useState<any>(null)
 
-      <div style={{padding:"40px",width:"100%"}}>
-        <h1>RankPilot Dashboard</h1>
+const runAudit = async ()=>{
 
-        <div style={{
-          display:"grid",
-          gridTemplateColumns:"repeat(3,1fr)",
-          gap:"20px",
-          marginTop:"30px"
-        }}>
+if(freeLimit <= 0){
+alert("Free limit finished. Upgrade to Pro Plan.")
+return
+}
 
-          <div style={{background:"#f1f5f9",padding:"20px",borderRadius:"10px"}}>
-            <h3>SEO Score</h3>
-            <h1>78</h1>
-          </div>
+freeLimit = freeLimit - 1
 
-          <div style={{background:"#f1f5f9",padding:"20px",borderRadius:"10px"}}>
-            <h3>Keywords</h3>
-            <h1>120</h1>
-          </div>
+const res = await fetch("https://rankpilot-ai.onrender.com/start-growth",{
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+body:JSON.stringify({domain})
+})
 
-          <div style={{background:"#f1f5f9",padding:"20px",borderRadius:"10px"}}>
-            <h3>Backlinks</h3>
-            <h1>56</h1>
-          </div>
+const data = await res.json()
+setResult(data)
 
-        </div>
-      </div>
+}
 
-    </div>
-  )
+return(
+
+<div style={{padding:"40px",background:"#020617",minHeight:"100vh",color:"white"}}>
+
+<h1>RankPilot Dashboard</h1>
+
+<p>Free SEO Audits Left: {freeLimit}</p>
+
+<br/>
+
+<input
+placeholder="Enter website domain"
+value={domain}
+onChange={(e)=>setDomain(e.target.value)}
+style={{padding:"10px",width:"300px"}}
+/>
+
+<button
+onClick={runAudit}
+style={{
+marginLeft:"10px",
+padding:"10px 20px",
+background:"#22c55e",
+border:"none"
+}}
+>
+Run SEO Audit
+</button>
+
+<br/><br/>
+
+{result && (
+
+<div style={{background:"#1e293b",padding:"20px"}}>
+
+<h2>AI Growth Plan</h2>
+
+{result.steps.map((s:any,i:number)=>(
+<p key={i}>• {s}</p>
+))}
+
+</div>
+
+)}
+
+</div>
+
+)
+
 }
