@@ -1,7 +1,11 @@
 "use client"
+
 import { useState } from "react"
+import { signIn, signOut, useSession } from "next-auth/react"
 
 export default function Home(){
+
+const { data:session } = useSession()
 
 const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
@@ -41,6 +45,22 @@ padding:"30px"
 <p>AI Content</p>
 <p>Backlinks</p>
 <p>Traffic Growth</p>
+
+<br/>
+
+{session ? (
+
+<button onClick={()=>signOut()}>
+Logout
+</button>
+
+):(
+
+<button onClick={()=>signIn()}>
+Login with GitHub
+</button>
+
+)}
 
 </div>
 
