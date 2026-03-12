@@ -1,29 +1,30 @@
 "use client"
 
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../lib/supabase"
 
 export default function Home(){
 
 const [user,setUser] = useState<any>(null)
+const [email,setEmail] = useState("")
 const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
 
 useEffect(()=>{
 
-const getUser = async ()=>{
-
+const getUser = async()=>{
 const { data } = await supabase.auth.getUser()
-
 setUser(data.user)
-
 }
 
 getUser()
 
 },[])
 
-const login = async ()=>{
+
+// GitHub login
+
+const loginGithub = async()=>{
 
 await supabase.auth.signInWithOAuth({
 provider:"github"
@@ -31,37 +32,90 @@ provider:"github"
 
 }
 
-const logout = async ()=>{
+
+// Email login
+
+const loginEmail = async()=>{
+
+if(!email){
+alert("Enter email")
+return
+}
+
+await supabase.auth.signInWithOtp({
+email:email
+})
+
+alert("Magic login link sent to email")
+
+}
+
+
+// Logout
+
+const logout = async()=>{
 
 await supabase.auth.signOut()
 location.reload()
 
 }
 
-const runAudit = async ()=>{
 
-const res = await fetch("https://rankpilot-ai.onrender.com/start-growth",{
+// Run SEO audit
+
+const runAudit = async()=>{
+
+if(!domain){
+alert("Enter domain")
+return
+}
+
+const res = await fetch(
+"https://rankpilot-ai.onrender.com/start-growth",
+{
 method:"POST",
-headers:{ "Content-Type":"application/json" },
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({domain})
-})
+}
+)
 
 const data = await res.json()
+
 setResult(data)
+
+if(user){
+
+await supabase.from("audits").insert({
+user_id:user.id,
+domain:domain,
+result:data
+})
 
 }
 
+}
+
+
+
 return(
 
-<div style={{display:"flex",minHeight:"100vh"}}>
+<div style={{
+display:"flex",
+height:"100vh"
+}}>
 
-{/* Sidebar */}
+
+{/* SIDEBAR */}
+
 
 <div style={{
 width:"240px",
 background:"#020617",
 color:"white",
-padding:"30px"
+padding:"30px",
+height:"100vh"
 }}>
 
 <h2>RankPilot</h2>
@@ -84,16 +138,41 @@ Logout
 
 ):(
 
-<button onClick={login}>
+<div>
+
+<button onClick={loginGithub}>
 Login with GitHub
 </button>
+
+<br/><br/>
+
+<input
+placeholder="Enter email"
+value={email}
+onChange={(e)=>setEmail(e.target.value)}
+style={{
+padding:"8px",
+width:"100%"
+}}
+/>
+
+<br/><br/>
+
+<button onClick={loginEmail}>
+Login with Email
+</button>
+
+</div>
 
 )}
 
 </div>
 
 
-{/* Main */}
+
+{/* MAIN */}
+
+
 
 <div style={{
 flex:1,
@@ -130,7 +209,9 @@ borderRadius:"6px"
 Start Growth
 </button>
 
+
 <br/><br/>
+
 
 {result && (
 
@@ -142,15 +223,17 @@ borderRadius:"10px"
 
 <h2>AI Growth Plan</h2>
 
-{result.steps.map((s:any,i:number)=>(
-<p key={i}>• {s}</p>
+{result.steps?.map((s:any,i:number)=>(
+<p key={i}>{s}</p>
 ))}
 
 </div>
 
 )}
 
+
 </div>
+
 
 </div>
 
