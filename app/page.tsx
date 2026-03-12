@@ -5,7 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react"
 
 export default function Home(){
 
-const sessionData = useSession()
+const { data: session } = useSession()
 
 const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
@@ -19,6 +19,7 @@ body:JSON.stringify({domain})
 })
 
 const data = await res.json()
+
 setResult(data)
 
 }
@@ -54,7 +55,7 @@ padding:"30px"
 Logout
 </button>
 
-):(
+) : (
 
 <button onClick={()=>signIn()}>
 Login with GitHub
@@ -63,6 +64,7 @@ Login with GitHub
 )}
 
 </div>
+
 
 {/* Main */}
 
@@ -131,22 +133,22 @@ gridTemplateColumns:"1fr 1fr",
 gap:"20px"
 }}>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>SEO Audit</h3>
 <p>Find technical SEO problems instantly</p>
 </div>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>AI Blog Generator</h3>
 <p>Create SEO optimized blog posts</p>
 </div>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>Backlink Generator</h3>
 <p>Generate high authority backlinks</p>
 </div>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>Traffic Agent</h3>
 <p>AI agent to grow website traffic</p>
 </div>
