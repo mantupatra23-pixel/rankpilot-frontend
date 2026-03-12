@@ -1,13 +1,44 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "../../lib/supabase"
 
 export default function Dashboard(){
 
+const router = useRouter()
+
 const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
 const [freeLimit,setFreeLimit] = useState(3)
+const [userEmail,setUserEmail] = useState("")
+const [plan,setPlan] = useState("free")
+
+useEffect(()=>{
+
+const checkUser = async () => {
+
+const { data } = await supabase.auth.getUser()
+
+if(!data.user){
+router.push("/login")
+}else{
+setUserEmail(data.user.email || "")
+}
+
+}
+
+checkUser()
+
+},[])
+
+const logout = async () => {
+
+await supabase.auth.signOut()
+
+router.push("/login")
+
+}
 
 const runAudit = async () => {
 
@@ -20,10 +51,10 @@ alert("Please login first")
 return
 }
 
-const { data: user } = await supabase
+const { data:user } = await supabase
 .from("users")
 .select("*")
-.eq("email", email)
+.eq("email",email)
 .single()
 
 let currentUser = user
@@ -40,7 +71,9 @@ currentUser = newUser
 
 }
 
-if(currentUser.audits <= 0){
+setPlan(currentUser.plan || "free")
+
+if(currentUser.plan === "free" && currentUser.audits <= 0){
 alert("Free limit finished. Upgrade to Pro Plan.")
 return
 }
@@ -57,12 +90,16 @@ const dataResult = await res.json()
 
 setResult(dataResult)
 
+if(currentUser.plan === "free"){
+
 await supabase
 .from("users")
 .update({ audits: currentUser.audits - 1 })
-.eq("email", email)
+.eq("email",email)
 
 setFreeLimit(currentUser.audits - 1)
+
+}
 
 }
 
@@ -72,9 +109,45 @@ return(
 
 <h1>RankPilot Dashboard</h1>
 
+<p>Logged in as: {userEmail}</p>
+
+<button
+onClick={logout}
+style={{
+padding:"6px 12px",
+background:"#ef4444",
+border:"none",
+marginTop:"10px",
+cursor:"pointer"
+}}
+>
+Logout
+</button>
+
+<br/><br/>
+
+<p>Plan: {plan}</p>
+
 <p>Free SEO Audits Left: {freeLimit}</p>
 
-<br/>
+{plan === "free" && freeLimit <= 0 && (
+
+<button
+onClick={()=>alert("Upgrade coming soon")}
+style={{
+padding:"10px 20px",
+background:"#f59e0b",
+border:"none",
+cursor:"pointer",
+marginTop:"10px"
+}}
+>
+Upgrade to Pro
+</button>
+
+)}
+
+<br/><br/>
 
 <input
 placeholder="Enter website domain"
