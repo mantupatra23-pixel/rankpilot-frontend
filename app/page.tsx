@@ -5,8 +5,8 @@ import { createClient } from "@supabase/supabase-js"
 import TrafficChart from "@/components/TrafficChart"
 
 const supabase = createClient(
-process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
 )
 
 export default function Home(){
@@ -17,20 +17,20 @@ const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
 
 useEffect(()=>{
-const getUser = async()=>{
+const getUser = async ()=>{
 const {data} = await supabase.auth.getUser()
 setUser(data.user)
 }
 getUser()
 },[])
 
-const loginGithub = async()=>{
+const loginGithub = async ()=>{
 await supabase.auth.signInWithOAuth({
 provider:"github"
 })
 }
 
-const loginEmail = async()=>{
+const loginEmail = async ()=>{
 if(!email){
 alert("Enter email")
 return
@@ -43,12 +43,12 @@ email:email
 alert("Magic login link sent")
 }
 
-const logout = async()=>{
+const logout = async ()=>{
 await supabase.auth.signOut()
 location.reload()
 }
 
-const runAudit = async()=>{
+const runAudit = async ()=>{
 
 if(!domain){
 alert("Enter domain")
@@ -111,7 +111,7 @@ padding:"30px"
 Logout
 </button>
 
-):( 
+):(
 
 <div>
 
@@ -195,22 +195,22 @@ gridTemplateColumns:"repeat(4,1fr)",
 gap:"20px"
 }}>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>SEO Score</h3>
 <h2>{result.score || 70}</h2>
 </div>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>Issues</h3>
 <h2>{result.issues || 12}</h2>
 </div>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>Backlinks</h3>
 <h2>{result.backlinks || 134}</h2>
 </div>
 
-<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<div style={{background:"#1e293b",padding:"20px"}}>
 <h3>Keywords</h3>
 <h2>{result.keywords || 25}</h2>
 </div>
