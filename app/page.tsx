@@ -183,7 +183,7 @@ Start Growth
 
 <br/><br/>
 
-{result && (
+{result ? (
 
 <div>
 
@@ -243,12 +243,10 @@ borderRadius:"10px"
 
 </div>
 
+) : (
+
+<p style={{opacity:0.6}}>
+Run SEO audit to see dashboard data
+</p>
+
 )}
-
-</div>
-
-</div>
-
-)
-
-}
