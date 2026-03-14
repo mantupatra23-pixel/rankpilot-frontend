@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "../../lib/supabase"
+import { getSupabase } from "../../lib/supabaseClient"
 
 export default function Dashboard(){
+
+const supabase = getSupabase()
 
 const router = useRouter()
 
