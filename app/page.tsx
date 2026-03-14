@@ -12,7 +12,6 @@ const [result,setResult] = useState<any>(null)
 useEffect(()=>{
 
 const getUser = async()=>{
-const { data } = await supabase.auth.getUser()
 setUser(data.user)
 }
 
