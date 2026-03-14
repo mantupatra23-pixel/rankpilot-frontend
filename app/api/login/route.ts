@@ -1,16 +1,15 @@
-import { supabase } from "@/lib/supabaseClient"
+import { getSupabase } from "@/lib/supabaseClient"
 
 export async function POST(req: Request) {
+
+  const supabase = getSupabase()
+
   const { email, password } = await req.json()
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
-    password,
+    password
   })
 
-  if (error) {
-    return Response.json({ error: error.message }, { status: 400 })
-  }
-
-  return Response.json({ user: data.user })
+  return Response.json({ data, error })
 }
