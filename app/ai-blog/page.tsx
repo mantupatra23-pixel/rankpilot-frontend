@@ -1,63 +1,108 @@
 "use client"
+
 import { useState } from "react"
 
-export default function AIBlog(){
+export default function AIBlog() {
 
-const [keyword,setKeyword] = useState("")
-const [blog,setBlog] = useState("")
+  const [keyword, setKeyword] = useState("")
+  const [blog, setBlog] = useState("")
 
-const generateBlog = async ()=>{
+  const generateBlog = async () => {
 
-const res = await fetch("https://rankpilot-ai.onrender.com/generate-blog",{
-method:"POST",
-headers:{ "Content-Type":"application/json" },
-body:JSON.stringify({keyword})
-})
+    if (!keyword) {
+      alert("Enter keyword")
+      return
+    }
 
-const data = await res.json()
-setBlog(data.blog)
+    try {
 
-}
+      const res = await fetch(
+        "https://rankpilot-ai.onrender.com/blog",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ keyword })
+        }
+      )
 
-return(
+      const data = await res.json()
 
-<div style={{padding:"40px",background:"#0f172a",minHeight:"100vh",color:"white"}}>
+      setBlog(data.blog)
 
-<h1>AI Blog Generator</h1>
+    } catch (err) {
+      console.log(err)
+      alert("Error generating blog")
+    }
 
-<br/>
+  }
 
-<input
-placeholder="Enter keyword"
-value={keyword}
-onChange={(e)=>setKeyword(e.target.value)}
-style={{padding:"10px",width:"300px"}}
-/>
+  return (
 
-<button
-onClick={generateBlog}
-style={{
-marginLeft:"10px",
-padding:"10px 20px",
-background:"#22c55e",
-border:"none"
-}}
->
-Generate
-</button>
+    <div
+      style={{
+        padding: "40px",
+        background: "#0f172a",
+        minHeight: "100vh",
+        color: "white"
+      }}
+    >
 
-<br/><br/>
+      <h1>AI Blog Generator</h1>
 
-{blog && (
+      <br />
 
-<div style={{background:"#1e293b",padding:"20px"}}>
-<p>{blog}</p>
-</div>
+      <input
+        placeholder="Enter keyword"
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        style={{
+          padding: "10px",
+          width: "300px",
+          borderRadius: "6px",
+          border: "none"
+        }}
+      />
 
-)}
+      <button
+        onClick={generateBlog}
+        style={{
+          marginLeft: "10px",
+          padding: "10px 20px",
+          background: "#22c55e",
+          border: "none",
+          borderRadius: "6px",
+          color: "white",
+          cursor: "pointer"
+        }}
+      >
+        Generate
+      </button>
 
-</div>
+      <br />
+      <br />
 
-)
+      {blog && (
+
+        <div
+          style={{
+            background: "#1e293b",
+            padding: "20px",
+            borderRadius: "10px"
+          }}
+        >
+
+          <h2>Generated Blog</h2>
+
+          <p>{blog}</p>
+
+        </div>
+
+      )}
+
+    </div>
+
+  )
 
 }

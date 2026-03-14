@@ -1,7 +1,13 @@
 "use client"
 
-import { useState,useEffect } from "react"
-import { supabase } from "../lib/supabase"
+import { useState, useEffect } from "react"
+import { createClient } from "@supabase/supabase-js"
+import TrafficChart from "@/components/TrafficChart"
+
+const supabase = createClient(
+process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+)
 
 export default function Home(){
 
@@ -11,37 +17,20 @@ const [domain,setDomain] = useState("")
 const [result,setResult] = useState<any>(null)
 
 useEffect(()=>{
-
-const getUser = async ()=>{
-
-const { data } = await supabase.auth.getUser()
-
+const getUser = async()=>{
+const {data} = await supabase.auth.getUser()
 setUser(data.user)
-
 }
-
 getUser()
-
 },[])
 
-
-
-// GitHub login
-
 const loginGithub = async()=>{
-
 await supabase.auth.signInWithOAuth({
 provider:"github"
 })
-
 }
 
-
-
-// Email login
-
 const loginEmail = async()=>{
-
 if(!email){
 alert("Enter email")
 return
@@ -51,34 +40,19 @@ await supabase.auth.signInWithOtp({
 email:email
 })
 
-alert("Magic login link sent to email")
-
+alert("Magic login link sent")
 }
-
-
-
-// Logout
 
 const logout = async()=>{
-
 await supabase.auth.signOut()
-
 location.reload()
-
 }
-
-
-
-// Run SEO audit
 
 const runAudit = async()=>{
 
 if(!domain){
-
 alert("Enter domain")
-
 return
-
 }
 
 const res = await fetch(
@@ -97,25 +71,18 @@ const data = await res.json()
 setResult(data)
 
 if(user){
-
 await supabase.from("audits").insert({
-
 user_id:user.id,
 domain:domain,
 result:data
-
 })
-
 }
 
 }
-
-
 
 return(
 
 <div style={{display:"flex",height:"100vh"}}>
-
 
 {/* SIDEBAR */}
 
@@ -144,7 +111,7 @@ padding:"30px"
 Logout
 </button>
 
-):(
+):( 
 
 <div>
 
@@ -175,7 +142,6 @@ Login with Email
 )}
 
 </div>
-
 
 
 {/* MAIN */}
@@ -215,11 +181,51 @@ borderRadius:"6px"
 Start Growth
 </button>
 
-
 <br/><br/>
 
-
 {result && (
+
+<div>
+
+{/* DASHBOARD CARDS */}
+
+<div style={{
+display:"grid",
+gridTemplateColumns:"repeat(4,1fr)",
+gap:"20px"
+}}>
+
+<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<h3>SEO Score</h3>
+<h2>{result.score || 70}</h2>
+</div>
+
+<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<h3>Issues</h3>
+<h2>{result.issues || 12}</h2>
+</div>
+
+<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<h3>Backlinks</h3>
+<h2>{result.backlinks || 134}</h2>
+</div>
+
+<div style={{background:"#1e293b",padding:"20px",borderRadius:"10px"}}>
+<h3>Keywords</h3>
+<h2>{result.keywords || 25}</h2>
+</div>
+
+</div>
+
+<br/>
+
+{/* TRAFFIC CHART */}
+
+<TrafficChart/>
+
+<br/>
+
+{/* AI PLAN */}
 
 <div style={{
 background:"#1e293b",
@@ -230,16 +236,16 @@ borderRadius:"10px"
 <h2>AI Growth Plan</h2>
 
 {result.steps?.map((s:any,i:number)=>(
-<p key={i}>{s}</p>
+<p key={i}>• {s}</p>
 ))}
+
+</div>
 
 </div>
 
 )}
 
-
 </div>
-
 
 </div>
 
