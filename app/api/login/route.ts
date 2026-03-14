@@ -1,15 +1,18 @@
-import { getSupabase } from "@/lib/supabaseClient"
+import { createClient } from "@supabase/supabase-js"
 
-export async function POST(req: Request) {
+let supabase: any = null
 
-  const supabase = getSupabase()
+export function getSupabase() {
+  if (!supabase) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  const { email, password } = await req.json()
+    if (!url || !key) {
+      throw new Error("Supabase env variables missing")
+    }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  })
+    supabase = createClient(url, key)
+  }
 
-  return Response.json({ data, error })
+  return supabase
 }
