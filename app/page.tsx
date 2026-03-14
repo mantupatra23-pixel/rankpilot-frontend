@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState,useEffect } from "react"
+import { supabase } from "../lib/supabase"
 
 export default function Home(){
 
@@ -11,13 +12,18 @@ const [result,setResult] = useState<any>(null)
 
 useEffect(()=>{
 
-const getUser = async()=>{
+const getUser = async ()=>{
+
+const { data } = await supabase.auth.getUser()
+
 setUser(data.user)
+
 }
 
 getUser()
 
 },[])
+
 
 
 // GitHub login
@@ -29,6 +35,7 @@ provider:"github"
 })
 
 }
+
 
 
 // Email login
@@ -49,14 +56,17 @@ alert("Magic login link sent to email")
 }
 
 
+
 // Logout
 
 const logout = async()=>{
 
 await supabase.auth.signOut()
+
 location.reload()
 
 }
+
 
 
 // Run SEO audit
@@ -64,8 +74,11 @@ location.reload()
 const runAudit = async()=>{
 
 if(!domain){
+
 alert("Enter domain")
+
 return
+
 }
 
 const res = await fetch(
@@ -86,9 +99,11 @@ setResult(data)
 if(user){
 
 await supabase.from("audits").insert({
+
 user_id:user.id,
 domain:domain,
 result:data
+
 })
 
 }
@@ -99,21 +114,16 @@ result:data
 
 return(
 
-<div style={{
-display:"flex",
-height:"100vh"
-}}>
+<div style={{display:"flex",height:"100vh"}}>
 
 
 {/* SIDEBAR */}
-
 
 <div style={{
 width:"240px",
 background:"#020617",
 color:"white",
-padding:"30px",
-height:"100vh"
+padding:"30px"
 }}>
 
 <h2>RankPilot</h2>
@@ -169,8 +179,6 @@ Login with Email
 
 
 {/* MAIN */}
-
-
 
 <div style={{
 flex:1,
