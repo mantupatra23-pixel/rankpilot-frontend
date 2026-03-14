@@ -1,15 +1,21 @@
-// lib/supabaseClient.ts
+import { NextResponse } from "next/server"
+import { getSupabase } from "@/lib/supabaseClient"
 
-import { createClient } from '@supabase/supabase-js'
+export async function POST(request: Request) {
+  const supabase = getSupabase()
 
-export function getSupabase() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const body = await request.json()
+  const email = body.email
+  const password = body.password
 
-  if (!supabaseUrl || !supabaseKey) {
-    console.error("Missing Supabase environment variables!");
-    throw new Error('Supabase URL or Key is missing.');
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  })
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 })
   }
 
-  return createClient(supabaseUrl, supabaseKey)
+  return NextResponse.json({ user: data.user })
 }
