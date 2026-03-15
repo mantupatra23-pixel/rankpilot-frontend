@@ -5,8 +5,8 @@ import { createClient } from "@supabase/supabase-js"
 import TrafficChart from "@/components/TrafficChart"
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
 )
 
 export default function Home(){
@@ -24,13 +24,13 @@ setUser(data.user)
 getUser()
 },[])
 
-const loginGithub = async ()=>{
+const loginGithub = async()=>{
 await supabase.auth.signInWithOAuth({
 provider:"github"
 })
 }
 
-const loginEmail = async ()=>{
+const loginEmail = async()=>{
 if(!email){
 alert("Enter email")
 return
@@ -43,12 +43,12 @@ email:email
 alert("Magic login link sent")
 }
 
-const logout = async ()=>{
+const logout = async()=>{
 await supabase.auth.signOut()
 location.reload()
 }
 
-const runAudit = async ()=>{
+const runAudit = async()=>{
 
 if(!domain){
 alert("Enter domain")
@@ -71,11 +71,13 @@ const data = await res.json()
 setResult(data)
 
 if(user){
+
 await supabase.from("audits").insert({
 user_id:user.id,
 domain:domain,
 result:data
 })
+
 }
 
 }
@@ -107,9 +109,7 @@ padding:"30px"
 
 {user ? (
 
-<button onClick={logout}>
-Logout
-</button>
+<button onClick={logout}>Logout</button>
 
 ):(
 
@@ -142,7 +142,6 @@ Login with Email
 )}
 
 </div>
-
 
 {/* MAIN */}
 
@@ -219,13 +218,9 @@ gap:"20px"
 
 <br/>
 
-{/* TRAFFIC CHART */}
-
 <TrafficChart/>
 
 <br/>
-
-{/* AI PLAN */}
 
 <div style={{
 background:"#1e293b",
@@ -250,3 +245,11 @@ Run SEO audit to see dashboard data
 </p>
 
 )}
+
+</div>
+
+</div>
+
+)
+
+}
